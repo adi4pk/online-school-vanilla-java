@@ -8,3 +8,4 @@ j1k-74-19,Victor,Enache,victor.enache@example.com,Password99,28
 m6n-52-67,Alexandra,Tudor,alexandra.tudor@example.com,Alpha321,25
 p3q-81-05,Cristian,Munteanu,cristian.munteanu@example.com,Beta654,19
 t8v-16-92,Gabriela,Rusu,gabriela.rusu@example.com,Gamma987,27
+9755fd14-6373-4854-b98f-d8298379b95c,Gabriela,Rusu2,gabriela2.rusu@example.com,Gamma987,27
