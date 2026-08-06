@@ -1,0 +1,10 @@
+a5e-12-32,Bogdan,Popescu,bogdan.popescu@example.com,Pass123,22
+c8f-45-71,Andrei,Ionescu,andrei.ionescu@example.com,Secret456,24
+d2b-98-14,Maria,Dumitru,maria.dumitru@example.com,Test789,21
+f7a-33-50,Elena,Marin,elena.marin@example.com,Qwerty12,23
+g4c-61-88,Radu,Georgescu,radu.georgescu@example.com,Welcome34,26
+h9d-27-43,Ioana,Stan,ioana.stan@example.com,Student55,20
+j1k-74-19,Victor,Enache,victor.enache@example.com,Password99,28
+m6n-52-67,Alexandra,Tudor,alexandra.tudor@example.com,Alpha321,25
+p3q-81-05,Cristian,Munteanu,cristian.munteanu@example.com,Beta654,19
+t8v-16-92,Gabriela,Rusu,gabriela.rusu@example.com,Gamma987,27
