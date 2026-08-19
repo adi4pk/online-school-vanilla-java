@@ -1,0 +1,64 @@
+public class StudentRepository{
+
+
+	public StudentRepository() {
+        	loadData();
+    }
+
+	public List<Student> findAll() {
+        return new ArrayList<>(students);
+    }
+
+	public Optional<Student> findById(String id) {      //returneaza Optional<Student> sau Optional<empty>
+    }
+
+	public Optional<Student> findByEmail(String email) {   //returneaza Optional<Student> sau Optional<empty>
+    }
+
+	public boolean existsByEmail(String email) {		//returneaza boolean true/false
+        return findByEmail(email).isPresent();
+    }
+
+	public int count() {
+        return students.size();
+    }
+
+	public Student add(Student student) {			//returneaza Student -- seteaza ID la student --> adauga studentul in students arr --> save()
+        if (existsByEmail(student.getEmail())) {
+            throw new IllegalArgumentException("Email already used: " + student.getEmail());
+        }
+        student.setId(UUID.randomUUID().toString());        //????
+        students.add(student);
+        save();
+        return student;
+    }
+
+	
+	public Student update(Student student) {		//returneaza Student -- modifica element in lista students arr --> save()
+
+	int index = indexOf(student.getId());   //studentul pe care îl modifici -- return index from .getId()
+	students.set(index, student);  //int index, E element -- inlocuieste studentul de la indexul x cu studentul modificat.
+        save();
+    }
+
+	public void deleteById(String id){		//gaseste indexul cu indexOf() --> .remove() student din lista students
+    }
+
+	private void loadData(){	//creeaza fisierul .txt
+
+	File file = new File(FILE_PATH);
+	try (Scanner scanner = new Scanner(file)) {...}
+	...try (Scanner scanner = new Scanner(file)) {
+
+    }
+
+
+	public void save(){	//overwrite function	--> dupa ce construieste StringBuilder --> scrie cu printer in fisier
+		StringBuilder content = new StringBuilder();
+		content.append(student.toText()).append(System.lineSeparator());        // "\n"
+
+		try (PrintWriter writer = new PrintWriter(FILE_PATH))
+		writer.print(content);
+    }
+
+}

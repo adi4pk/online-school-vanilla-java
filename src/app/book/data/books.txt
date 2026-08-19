@@ -1,0 +1,10 @@
+t8v-16-92,Clean Code,2024-01-15
+k3m-47-81,Design Patterns,2023-11-07
+p9x-22-64,Refactoring,2022-06-19
+r5j-88-13,Effective Java,2021-09-30
+n2q-14-75,Java Concurrency in Practice,2020-12-11
+b7c-39-58,Head First Java,2024-03-22
+z4l-71-20,Spring in Action,2023-08-14
+h6w-55-97,Algorithms Unlocked,2022-02-28
+d1f-83-41,The Pragmatic Programmer,2021-05-17
+y8n-26-69,Domain-Driven Design,2024-07-03
