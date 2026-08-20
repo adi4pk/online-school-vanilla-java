@@ -6,30 +6,32 @@ import java.time.LocalDate;
 
 public class Book {
 
-    private String bookId;
+    private String id;
     private String bookName;
     private LocalDate createdAt;
-
-    private Student student;    //o carte poate avea doar un student
+    private String stundentId ;//o carte poate avea doar un student
 
     public Book(String text){  //dam String in argument, functia il parseaza ca sa umple proprietatile cu tipul potrivit (e.g. String, LocalDate etc.)
 
         String[] arr = text.split(",");
-        this.setBookId(arr[0]);
+
+        this.setId(arr[0]);
         this.setBookName(arr[1]);
         this.setCreated_at(LocalDate.parse(arr[2]));
+        this.setStundentId(arr[3]);
     }
 
-    public void assignToStudent(Student student){
-        this.student = student;
+
+    public  Book(){
+
     }
 
-    public void setBookId(String bookId){
-        this.bookId = bookId;
+    public void setId(String id){
+        this.id = id;
     }
 
-    public String getBookId(){
-        return bookId;
+    public String getId(){
+        return id;
     }
 
     public void setBookName(String bookName){
@@ -48,8 +50,16 @@ public class Book {
         return createdAt;
     }
 
+    public void setStundentId(String studentId){
+        this.stundentId = studentId;
+    }
+
+    public String getStundentId(){
+        return stundentId;
+    }
+
     public String toText(){
-        return this.bookId + "," +this.bookName + "," + this.createdAt;
+        return this.id + "," +this.bookName + "," + this.createdAt + "," +this.stundentId;
     }
 
 

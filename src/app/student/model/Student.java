@@ -15,8 +15,6 @@ public class Student {
     private String password;
     private int age;
 
-    private List<Book> arrBooks = new ArrayList<>();
-    private CardStudent card;
 
     public Student(String text){
         String[] arr = text.split(",");         //split the String argument in the constructor
@@ -27,25 +25,9 @@ public class Student {
         this.setPassword(arr[4]);
         this.setAge(Integer.parseInt(arr[5]));          //parse the String to an Integer
 
-//        CardStudent ownCard = new CardStudent();
-//        setCard(ownCard);
 
     }
 
-    public void setCard(CardStudent card){
-        this.card = card;
-        card.setStudent(this);
-    }
-
-    public void cumparaCarte(Book book){
-        arrBooks.add(book);   //legatura Student -> to Book
-        book.assignToStudent(this); //creeaza legatura Book -> to Student
-    }
-
-    public void aruncaCarte(Book book){
-        arrBooks.remove(book);
-        book.assignToStudent(null);
-    }
 
     public String getLastName() {
         return lastName;
@@ -100,9 +82,5 @@ public class Student {
         return this.id+","+this.firstName+","+this.lastName+","+this.email+","+this.password+","+this.age;
     }
 
-    int x = 0;
-    String text = "";
-    Integer y = 0;
 
-    ArrayList<Integer> arr = new ArrayList<>();
 }

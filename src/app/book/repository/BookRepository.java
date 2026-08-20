@@ -3,8 +3,10 @@ package app.book.repository;
 
 import app.book.Book;
 
+import javax.swing.text.html.Option;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
 import java.util.*;
 import java.io.PrintWriter;
 import java.util.Scanner;
@@ -28,7 +30,7 @@ public class BookRepository {
 
     public Optional<Book> findById(String id){   //returneaza Obiect
         for(Book book : books){
-            if (book.getBookId().equals(id)){
+            if (book.getId().equals(id)){
                 return Optional.of(book);
             }
         }
@@ -54,37 +56,60 @@ public class BookRepository {
     }
 
 
+    public List<Book> findBooksByStudentId(String studentId){
+
+        List<Book> studentBooks = new ArrayList<>();
+
+        for (Book book : books){
+            if (book.getStundentId().equals(studentId)){
+                studentBooks.add(book);
+            }
+        }
+        return studentBooks;
+    }
+
+
     public int indexOfBook(String id){
         for (int i=0; i<books.size(); i++){
-            if (books.get(i).getBookId().equals(id)){
+            if (books.get(i).getId().equals(id)){
                 return i;
             }
         }
         return -1;
     }
 
-    public Book addBook(Book book){     //repository.add() book to repository
+    public Book addBook(String  name,String studentId){
+        Book book = new Book();
+        book.setStundentId(studentId);
+        book.setBookName(name);
+        //repository.add() book to repository
         if(existsByBookName(book.getBookName())){
             throw new IllegalArgumentException("Book is already in the store.");
         }
+        book.setCreated_at(LocalDate.now());
+        book.setId(UUID.randomUUID().toString());
 
-        book.setBookId(UUID.randomUUID().toString());
+
+
         books.add(book);
+
 
         ////////SAVE
         save();
         return book;
     }
 
+
+
     public Book updateBook(Book book){      //update repository();
-        int index = indexOfBook(book.getBookId());
+        int index = indexOfBook(book.getId());
         if (index == -1){
-            throw new IllegalArgumentException("Book not found: " +book.getBookId());
+            throw new IllegalArgumentException("Book not found: " +book.getId());
         }
 
         Optional<Book> byBookName = findByBookName(book.getBookName());     //--> returneaza un obiect in baza numelui cartii
         //daca cartea este gasita si id-ul ei nu este acelasi cu book.getBookId() --> eroare;
-        if(byBookName.isPresent() && !byBookName.get().getBookId().equals(book.getBookId())){
+        if(byBookName.isPresent() && !byBookName.get().getId().equals(book.getId())){
             throw new IllegalArgumentException("Book name is already used: " + book.getBookName());
             //daca id-urile nu se potrivesc --> update fails --> numele cartii e deja la alt obiect -> NOT unique.
         }
@@ -102,18 +127,23 @@ public class BookRepository {
 //
 
     public void deleteByBookId(String id){
-//        for(int i=0; i<books.size(); i++){
-//            if (books.get(i).getBookId().equals(id)){
-//                books.remove(i);
-//            }
-//        }
-
         int index = indexOfBook(id);
         if(index == -1){
             throw new IllegalArgumentException("Book not found");
         }
         books.remove(index);
         save();
+    }
+
+    public boolean deleteByBookName(String bookName){
+
+        Optional<Book> book =findByBookName(bookName);
+        if(book.isPresent()){
+            this.books.remove(book.get());
+            this.save();
+            return  true;
+        }
+        return  false;
     }
 
 

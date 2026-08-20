@@ -18,8 +18,7 @@ public class CourseRepository {
     private final List<Course> courses = new ArrayList<>();
 
     public CourseRepository(){
-
-
+        loadData();
     }
 
     public List<Course> findAllCourses(){
@@ -51,6 +50,39 @@ public class CourseRepository {
     public int countCourses(){
         return courses.size();
     }
+
+    public Course add(Course course){
+        if(existsByCourseName(course.getCourseName())){
+            throw new IllegalArgumentException("The course is already on the list: " + course.getCourseName());
+        }
+        course.setCourseId(UUID.randomUUID().toString());
+        courses.add(course);
+
+        save();
+        return course;
+    }
+
+
+    public Course update(Course course){
+        int index = indexOfCourse(course.getCourseId());
+        if(index == -1){
+            throw new IllegalArgumentException("Course not found: " + course.getCourseId());
+        }
+        courses.set(index, course);
+        save();
+        return course;
+    }
+
+    public void deleteByCourseId(String id){
+        int index = indexOfCourse(id);
+        if(index == -1){
+            throw new IllegalArgumentException("Course not found" + id);
+        }
+        courses.remove(index);
+        save();
+    }
+
+
 
     public int indexOfCourse(String id){
         for (int i=0; i< courses.size(); i++){
