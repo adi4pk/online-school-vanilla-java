@@ -5,7 +5,9 @@ import app.book.repository.BookRepository;
 import app.student.model.Student;
 
 import javax.sound.midi.Soundbank;
+import java.sql.SQLOutput;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class View {
@@ -41,6 +43,9 @@ public class View {
                 case 3:
                     addBook();
                     break;
+                case 4:
+                    editBook();
+                    break;  //MAKE SURE YOU use break, otherwise the code block keeps going down to case 0;
                 case 0:
                     System.out.println("Bye");
                     break;
@@ -59,6 +64,7 @@ public class View {
         System.out.println("1-show books");
         System.out.println("2-delete book");
         System.out.println("3-add book");
+        System.out.println("4-edit book");
     }
 
     public  void showStudentBooks(){
@@ -86,6 +92,25 @@ public class View {
             e.printStackTrace();
         }
 
+    }
+
+    public void editBook(){
+        System.out.println("Enter the book name you would like to edit: ");
+        String oldName=scanner.nextLine();
+        System.out.println("Enter the new name of the book: ");
+        String newName = scanner.nextLine();
+
+        try{
+            bookRepository.updateBookName(oldName,newName,student.getId());
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+
+
+
+
+        //System.out.println("Book name changed to" + bookName);
     }
 
 

@@ -101,21 +101,27 @@ public class BookRepository {
 
 
 
-    public Book updateBook(Book book){      //update repository();
-        int index = indexOfBook(book.getId());
-        if (index == -1){
-            throw new IllegalArgumentException("Book not found: " +book.getId());
+    public Book updateBookName(String oldName,String newName,String studentId){      //update repository();
+        //todo:conditii de existenta
+        // verificam daca studentul are cartea respectiva
+        List<Book> books=findBooksByStudentId(studentId);
+        Book book=null;
+        for(Book b : books){
+            if(b.getBookName().equalsIgnoreCase(oldName)){
+                book = b;
+            }
+        }
+        if(book==null){
+            throw new IllegalArgumentException("The Book does not exist in your library");
         }
 
-        Optional<Book> byBookName = findByBookName(book.getBookName());     //--> returneaza un obiect in baza numelui cartii
-        //daca cartea este gasita si id-ul ei nu este acelasi cu book.getBookId() --> eroare;
-        if(byBookName.isPresent() && !byBookName.get().getId().equals(book.getId())){
-            throw new IllegalArgumentException("Book name is already used: " + book.getBookName());
-            //daca id-urile nu se potrivesc --> update fails --> numele cartii e deja la alt obiect -> NOT unique.
+        for(Book b : books){
+            if (b.getBookName().equalsIgnoreCase(newName)){
+                throw new IllegalArgumentException("The book title already exists.");
+            }
         }
 
-        books.set(index, book);
-        save();
+        book.setBookName(newName);
         return book;
     }
 
