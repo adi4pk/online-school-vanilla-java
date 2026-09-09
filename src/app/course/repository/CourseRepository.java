@@ -24,7 +24,18 @@ public class CourseRepository {
     public List<Course> findAllCourses(){
         return new ArrayList<>(courses);
     }
+    public List<Course> findAllCoursesByIds(List<String> coursesIds){
+        List<Course> searchedCourses= new ArrayList<>();
+        for (Course course : courses){
+            if(coursesIds.contains(course.getCourseId())){
+                searchedCourses.add(course);
+            }
+        }
 
+        return searchedCourses;
+    }
+
+    //todo
     public Optional<Course> findById(String id){
         for (Course course : courses){
             if(course.getCourseId().equals(id)){
@@ -80,6 +91,18 @@ public class CourseRepository {
         }
         courses.remove(index);
         save();
+    }
+
+
+    public boolean deleteByCourseName(String courseName){
+
+        Optional<Course> course = findByCourseName(courseName);
+        if(course.isPresent()){
+            this.courses.remove(course.get());
+            this.save();
+            return true;
+        }
+        return false;
     }
 
 

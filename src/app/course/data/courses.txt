@@ -1,0 +1,10 @@
+C001,Java Programming,Computer Science
+C002,Database Systems,Computer Science
+C003,Web Development,Computer Science
+C004,Software Engineering,Computer Science
+C005,Operating Systems,Computer Science
+C006,Computer Networks,Computer Science
+C007,Data Structures,Computer Science
+C008,Artificial Intelligence,Computer Science
+C009,Digital Marketing,Business
+C010,Financial Accounting,Business

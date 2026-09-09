@@ -1,5 +1,6 @@
 package app.enrollment.repository;
 
+import app.book.Book;
 import app.enrollment.model.Enrollment;
 
 import java.io.File;
@@ -21,24 +22,72 @@ public class EnrollmentRepository {
 
     public EnrollmentRepository(){
 
+        loadData();
     }
+
+//    public Enrollment addEnrollment(String studentId, String courseId, LocalDate createdAt){
+//
+////        Enrollment enrollment = new Enrollment();
+//    };
+
+    public Enrollment addEnrollment(Enrollment enrollment){
+        if(this.checkEnrollmentByStudentId(enrollment.getStudentId(), enrollment.getCourseId())){
+            throw new IllegalArgumentException("You are already registered for this course.");
+        }
+        enrollments.add(enrollment);
+        save();
+        return enrollment;
+    }
+
+
+    public void deleteById(String studentId, String courseId) {
+        int index = indexOf(studentId, courseId);
+        if (index == -1) {
+            throw new IllegalArgumentException("Enrollment not found: " + studentId +", " + courseId);
+        }
+        enrollments.remove(index);
+        save();
+    }
+
+    private int indexOf(String studentId, String courseId) {
+        for (int i = 0; i < enrollments.size(); i++) {
+            if (enrollments.get(i).getStudentId().equals(studentId) && enrollments.get(i).getCourseId().equals(courseId)) {
+                return i;   //-> index-ul lui enrollments in enrollments arr
+            }
+        }
+        return -1;
+    }
+
 
     public List<Enrollment> findAllEnrollments(){
         return new ArrayList<>(enrollments);
     }
 
-    public Optional<Enrollment> findByStudentId(String id){
+    public  List<Enrollment> findAllEnrollmentsByStudentId(String id){
+
+        List<Enrollment> studentEnrollmentsArr = new ArrayList<>();
+
         for (Enrollment e : enrollments){
             if (e.getStudentId().equalsIgnoreCase(id)){
+                studentEnrollmentsArr.add(e);
+            }
+        }
+
+        return studentEnrollmentsArr;
+    }
+
+    public Optional<Enrollment> findByCourseId(String courseId){
+        for (Enrollment e : enrollments){
+            if (e.getCourseId().equals(courseId)){
                 return Optional.of(e);
             }
         }
         return Optional.empty();
     }
 
-    public Optional<Enrollment> findByCourseId(String courseId){
-        for (Enrollment e : enrollments){
-            if (e.getCourseId().equals(courseId)){
+    public Optional<Enrollment> findByStudentIdAndCourseId(String studentId, String courseId){
+        for(Enrollment e: enrollments){
+            if (e.getStudentId().equals(studentId) && e.getCourseId().equals(courseId)){
                 return Optional.of(e);
             }
         }
@@ -100,6 +149,34 @@ public class EnrollmentRepository {
             throw new IllegalArgumentException("Cannot read file: " + file.getAbsolutePath(), ex);
         }
     }
+
+    public boolean checkEnrollmentByStudentId(String studentId, String courseId){
+        for(Enrollment enrollment : enrollments){
+            if (enrollment.getStudentId().equals(studentId) && enrollment.getCourseId().equals(courseId)){
+
+                return true;
+            }
+
+
+        }
+        return false;
+    }
+
+
+    private void save(){
+        StringBuilder content = new StringBuilder();
+        for (Enrollment enrollment: enrollments){
+            content.append(enrollment.toText()).append(System.lineSeparator());
+        }
+
+        try(PrintWriter writer = new PrintWriter(FILE_PATH)){
+            writer.print(content);
+        } catch (FileNotFoundException ex){
+            throw new IllegalArgumentException("Cannot write file: " + FILE_PATH, ex);
+        }
+    }
+
+
 
 
 }

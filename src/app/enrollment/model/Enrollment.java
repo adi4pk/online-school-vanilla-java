@@ -5,11 +5,16 @@ import app.enrollment.repository.EnrollmentRepository;
 import java.time.LocalDate;
 
 public class Enrollment {
-
     private String studentId;
     private String courseId;
     private LocalDate createdAt;
 
+
+    public  Enrollment(String studentId, String courseId, LocalDate createdAt){
+        this.setStudentId(studentId);
+        this.setCourseId(courseId);
+        this.setCreatedAt(createdAt);
+    }
 
 
     public Enrollment(String text){
@@ -43,4 +48,10 @@ public class Enrollment {
     public void setCreatedAt(LocalDate createdAt){
         this.createdAt = createdAt;
     }
+
+    public String toText(){
+        return this.studentId + "," + this.courseId +"," + this.createdAt;
+    }
 }
+
+
