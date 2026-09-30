@@ -1,7 +1,5 @@
 package app.cardStudent.model;
 
-import app.student.model.Student;
-
 public class CardStudent {
 
     private String cardId;

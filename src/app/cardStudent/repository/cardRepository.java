@@ -1,9 +1,7 @@
 package app.cardStudent.repository;
 
 import app.cardStudent.model.CardStudent;
-import app.student.model.Student;
 
-import javax.smartcardio.Card;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;

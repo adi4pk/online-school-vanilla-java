@@ -1,6 +1,7 @@
 package app.course.repository;
 
 import app.course.model.Course;
+import app.student.model.Teacher;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,6 +25,30 @@ public class CourseRepository {
     public List<Course> findAllCourses(){
         return new ArrayList<>(courses);
     }
+
+    public List<Course> findCoursesByTeacherId(String id){
+        List<Course> coursesArr = new ArrayList<>();
+        for (Course course : courses){
+            if (course.getTeacherId().equals(id)){
+                coursesArr.add(course);
+            }
+        }
+        return coursesArr;
+    }
+
+
+    public void assignCourseToTeacher(Course course, Teacher teacher){
+        if (course.getTeacherId().isEmpty()){
+            course.setTeacherId(teacher.getId());
+            teacher.getCoursesList().add(course);
+
+        } else{
+            System.out.println("The course is already assigned to Teacher: " + teacher.getLastName());
+        }
+
+    }
+
+
     public List<Course> findAllCoursesByIds(List<String> coursesIds){
         List<Course> searchedCourses= new ArrayList<>();
         for (Course course : courses){

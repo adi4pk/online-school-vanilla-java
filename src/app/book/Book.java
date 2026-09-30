@@ -1,7 +1,5 @@
 package app.book;
 
-import app.student.model.Student;
-
 import java.time.LocalDate;
 
 public class Book {

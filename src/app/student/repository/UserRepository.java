@@ -1,6 +1,6 @@
 package app.student.repository;
 
-import app.student.model.Student;
+import app.student.model.User;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,33 +11,46 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.UUID;
 
-public class StudentRepository {
+import app.student.model.Teacher;
 
-    private static final String FILE_PATH = "src/app/student/data/students.txt";
+public class UserRepository {
 
-    private final List<Student> students = new ArrayList<>();
+    private static final String FILE_PATH = "src/app/student/data/users.txt";
 
-    public StudentRepository() {
+    private final List<User> users = new ArrayList<>();
+
+    public UserRepository() {
         loadData();
     }
 
-    public List<Student> findAll() {
-        return new ArrayList<>(students);
+    public List<User> findAll() {
+        return new ArrayList<>(users);
     }
 
-    public Optional<Student> findById(String id) {      //returneaza Student sau optional empty
-        for (Student student : students) {
-            if (student.getId().equals(id)) {
-                return Optional.of(student);
+    public Optional<User> findById(String id) {      //returneaza Student sau optional empty
+        for (User user : users) {
+            if (user.getId().equals(id)) {
+                return Optional.of(user);
             }
         }       //daca bucla nu gaseste nimic -> merge mai departe la return .empty();
         return Optional.empty();
     }
 
-    public Optional<Student> findByEmail(String email) {        //returneaza Student sau optional empty
-        for (Student student : students) {
-            if (student.getEmail().equalsIgnoreCase(email)) {
-                return Optional.of(student);
+    public Optional<User> findUserTypeById(String id){
+        for (User user: users){
+            if (user instanceof Teacher && user.getId().equals(id)){
+                return Optional.of(user);
+            }
+        }
+        return Optional.empty();
+    }
+
+
+
+    public Optional<User> findByEmail(String email) {        //returneaza Student sau optional empty
+        for (User user : users) {
+            if (user.getEmail().equalsIgnoreCase(email)) {
+                return Optional.of(user);
             }
         }
         return Optional.empty();
@@ -48,33 +61,33 @@ public class StudentRepository {
     }
 
     public int count() {
-        return students.size();
+        return users.size();
     }
 
-    public Student add(Student student) {
-        if (existsByEmail(student.getEmail())) {
-            throw new IllegalArgumentException("Email already used: " + student.getEmail());
+    public User add(User user) {
+        if (existsByEmail(user.getEmail())) {
+            throw new IllegalArgumentException("Email already used: " + user.getEmail());
         }
-        student.setId(UUID.randomUUID().toString());        //????
-        students.add(student);
+        user.setId(UUID.randomUUID().toString());        //????
+        users.add(user);
         save();
-        return student;
+        return user;
     }
 
-    public Student update(Student student) {
-        int index = indexOf(student.getId());   //studentul pe care îl modifici -- return index from .getId()
+    public User update(User user) {
+        int index = indexOf(user.getId());   //studentul pe care îl modifici -- return index from .getId()
         if (index == -1) {
-            throw new IllegalArgumentException("Student not found: " + student.getId());
+            throw new IllegalArgumentException("Student not found: " + user.getId());
         }
-        Optional<Student> byEmail = findByEmail(student.getEmail());    //arg String email, returns Student student
-        if (byEmail.isPresent() && !byEmail.get().getId().equals(student.getId())) {
+        Optional<User> byEmail = findByEmail(user.getEmail());    //arg String email, returns Student student
+        if (byEmail.isPresent() && !byEmail.get().getId().equals(user.getId())) {
         //studentul găsit în repository după email -- return id from email
 
-            throw new IllegalArgumentException("Email already used: " + student.getEmail());
+            throw new IllegalArgumentException("Email already used: " + user.getEmail());
         }
-        students.set(index, student);  //int index, E element -- inlocuieste studentul de la indexul x cu studentul modificat.
+        users.set(index, user);  //int index, E element -- inlocuieste studentul de la indexul x cu studentul modificat.
         save();
-        return student;
+        return user;
     }
 
     public void deleteById(String id) {
@@ -82,13 +95,13 @@ public class StudentRepository {
         if (index == -1) {
             throw new IllegalArgumentException("Student not found: " + id);
         }
-        students.remove(index);
+        users.remove(index);
         save();
     }
 
     private int indexOf(String id) {        //returneaza un int care e egal cu pozitia lui Student in students arr
-        for (int i = 0; i < students.size(); i++) {
-            if (students.get(i).getId().equals(id)) {
+        for (int i = 0; i < users.size(); i++) {
+            if (users.get(i).getId().equals(id)) {
                 //getId() al studentului si verifica daca == cu id din argument -> if true return int pozitia
                 return i;   //-> index-ul lui Student in students arr
             }
@@ -110,7 +123,7 @@ public class StudentRepository {
                     continue;      //--> sari peste iterația curentă -- dar continuă bucla
                 }
                 try {
-                    students.add(new Student(line));
+                    users.add(new User(line));
                 } catch (RuntimeException ex) {     //NumberFormatException -- in cazul in care dam um String | e.g. age = "x" - eroare la parsare().
                     throw new IllegalStateException("Invalid student at line " + lineNumber + ": " + line, ex);
 
@@ -125,8 +138,8 @@ public class StudentRepository {
 
     private void save() {     //OVERWRITE function
         StringBuilder content = new StringBuilder();
-        for (Student student : students) {
-            content.append(student.toText()).append(System.lineSeparator());        //"\n" append student as String + separate line by line "\n"
+        for (User user : users) {
+            content.append(user.toText()).append(System.lineSeparator());        //"\n" append student as String + separate line by line "\n"
         }
         try (PrintWriter writer = new PrintWriter(FILE_PATH)) {     //ia ca argument un obiect de tip File sau String Filename
             writer.print(content);

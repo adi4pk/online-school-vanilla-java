@@ -24,11 +24,11 @@ Comentariile de studiu din cod (ce returnează fiecare metodă, de ce `continue`
 
 ```
 Exception in thread "main" java.lang.IllegalArgumentException: Email already used: gabriela2.rusu@example.com
-	at app.student.repository.StudentRepository.add(StudentRepository.java:56)
+	at app.user.repository.StudentRepository.add(StudentRepository.java:56)
 	at app.Main.main(Main.java:14)
 ```
 
-`Main` adaugă necondiționat același student la fiecare pornire. Prima rulare a mers și a scris linia 11 în `students.txt`; de atunci, orice rulare se oprește în excepție înainte să apuce să facă altceva.
+`Main` adaugă necondiționat același user la fiecare pornire. Prima rulare a mers și a scris linia 11 în `students.txt`; de atunci, orice rulare se oprește în excepție înainte să apuce să facă altceva.
 
 **Restanță din review-ul anterior — încă deschisă.**
 
@@ -37,7 +37,7 @@ Nu e o eroare de logică în repository (validarea e corectă), e o eroare de *s
 ---
 
 ### B2 — `update()` acceptă emailuri duplicate și le salvează pe disc
-`src/app/student/repository/StudentRepository.java:69-74` și, prin copy-paste, `src/app/book/repository/BookRepository.java:85-90`
+`src/app/user/repository/StudentRepository.java:69-74` și, prin copy-paste, `src/app/book/repository/BookRepository.java:85-90`
 
 Reprodus: iau studentul de pe poziția 0, îi pun emailul studentului de pe poziția 1, chem `update()`. Rezultat:
 
@@ -49,7 +49,7 @@ Reprodus: iau studentul de pe poziția 0, îi pun emailul studentului de pe pozi
 
 Două conturi cu același email, **scrise în fișier**. Regula de unicitate a fost ocolită complet.
 
-**Mecanismul.** `findAll()` returnează o copie a *listei*, dar nu a *obiectelor* — sunt aceleași referințe. Deci când faci `s.setEmail(...)`, ai modificat deja obiectul **dinăuntrul** repository-ului, înainte ca `update()` să fi validat ceva. Când `update()` cheamă apoi `findByEmail(student.getEmail())`, prima potrivire găsită în listă este chiar obiectul pe care tocmai l-ai modificat. Verificarea devine „am eu același id cu mine însumi?" → `true` → nicio excepție.
+**Mecanismul.** `findAll()` returnează o copie a *listei*, dar nu a *obiectelor* — sunt aceleași referințe. Deci când faci `s.setEmail(...)`, ai modificat deja obiectul **dinăuntrul** repository-ului, înainte ca `update()` să fi validat ceva. Când `update()` cheamă apoi `findByEmail(user.getEmail())`, prima potrivire găsită în listă este chiar obiectul pe care tocmai l-ai modificat. Verificarea devine „am eu același id cu mine însumi?" → `true` → nicio excepție.
 
 Validarea nu are cum să apere o stare care s-a schimbat deja sub ea.
 
@@ -98,27 +98,27 @@ Ce nu merge e ce ai acum: constructorul citește un id, repository-ul îl ignor�
 ---
 
 ### B5 — aceeași carte poate ajunge la doi studenți deodată
-`src/app/student/model/Student.java:40-43` + `src/app/book/Book.java:23-25`
+`src/app/user/model/Student.java:40-43` + `src/app/book/Book.java:23-25`
 
-Reprodus: `s1.cumparaCarte(carte)` apoi `s2.cumparaCarte(carte)`. Cartea rămâne în `arrBooks` la **amândoi**, dar `carte.student` reține doar pe `s2`. Relația bidirecțională a devenit inconsistentă: dintr-o parte se vede una, din cealaltă alta.
+Reprodus: `s1.cumparaCarte(carte)` apoi `s2.cumparaCarte(carte)`. Cartea rămâne în `arrBooks` la **amândoi**, dar `carte.user` reține doar pe `s2`. Relația bidirecțională a devenit inconsistentă: dintr-o parte se vede una, din cealaltă alta.
 
-`cumparaCarte` setează legătura, dar nu o **desface** pe cea veche. Ai definit `Book.student` ca „o carte poate avea doar un student" (comentariul tău de la `Book.java:13`), dar nimic din cod nu apără invariantul ăsta.
+`cumparaCarte` setează legătura, dar nu o **desface** pe cea veche. Ai definit `Book.user` ca „o carte poate avea doar un user" (comentariul tău de la `Book.java:13`), dar nimic din cod nu apără invariantul ăsta.
 
-Aceeași problemă la `deleteByBookId` (`BookRepository:104`): scoți cartea din repository, dar referința rămâne în `Student.arrBooks` — student cu o carte care nu mai există.
+Aceeași problemă la `deleteByBookId` (`BookRepository:104`): scoți cartea din repository, dar referința rămâne în `Student.arrBooks` — user cu o carte care nu mai există.
 
 ---
 
 ## 🟡 Importante
 
-- **M1 — relațiile nu se salvează deloc.** `Student.toText():99` scrie 6 câmpuri, fără cărți și fără card. `Book.toText():51` scrie 3 câmpuri, fără student. Deci toată munca de la B5 trăiește doar în RAM: la repornire, fiecare student are 0 cărți și fiecare carte 0 studenți. Trebuie decis unde ține fișierul legătura — cel mai simplu, `books.txt` primește o a 4-a coloană cu `studentId` (partea „many" ține cheia străină, exact ca în schema ta din `public/schema.jpeg`).
+- **M1 — relațiile nu se salvează deloc.** `Student.toText():99` scrie 6 câmpuri, fără cărți și fără card. `Book.toText():51` scrie 3 câmpuri, fără user. Deci toată munca de la B5 trăiește doar în RAM: la repornire, fiecare user are 0 cărți și fiecare carte 0 studenți. Trebuie decis unde ține fișierul legătura — cel mai simplu, `books.txt` primește o a 4-a coloană cu `studentId` (partea „many" ține cheia străină, exact ca în schema ta din `public/schema.jpeg`).
 
-- **M2 — `setCard(null)` → `NullPointerException`.** `Student.java:35-38`: `card.setStudent(this)` fără verificare de null. Reprodus. În plus, `CardStudent` nu are `getStudent()` (nu poți verifica legătura din cealaltă parte), iar `CardStudent.setStudent()` e `public` — cine îl cheamă direct sparge legătura, pentru că nu setează și `student.card`. Într-o relație bidirecțională, **un singur capăt trebuie să fie „proprietarul" metodei publice**; celălalt devine package-private sau intern.
+- **M2 — `setCard(null)` → `NullPointerException`.** `Student.java:35-38`: `card.setStudent(this)` fără verificare de null. Reprodus. În plus, `CardStudent` nu are `getStudent()` (nu poți verifica legătura din cealaltă parte), iar `CardStudent.setStudent()` e `public` — cine îl cheamă direct sparge legătura, pentru că nu setează și `user.card`. Într-o relație bidirecțională, **un singur capăt trebuie să fie „proprietarul" metodei publice**; celălalt devine package-private sau intern.
 
 - **M3 — `Course.registeredStudents:14` e declarat și nu e populat niciodată.** Nu există `inscrieStudent()` / `retrageStudent()`. Câmpul e, deocamdată, decor. Iar `CourseRepository` n-are niciun fel de scriere (add/update/delete).
 
 - **M4 — validarea de unicitate pe numele cărții.** `addBook():67` refuză a doua carte cu același titlu. Într-o școală vrei, probabil, două exemplare din „Clean Code". Dacă da, unicitatea trebuie mutată pe id, iar `existsByBookName` rămâne doar căutare. Decizie de modelare — spune tu care e intenția.
 
-- **M5 — `Book` nu e în `app.book.model`.** `Student` e în `app.student.model`, `Course` în `app.course.model`, `Book` direct în `app.book`. Structura devine imprevizibilă când crește.
+- **M5 — `Book` nu e în `app.book.model`.** `Student` e în `app.user.model`, `Course` în `app.course.model`, `Book` direct în `app.book`. Structura devine imprevizibilă când crește.
 
 ---
 
@@ -140,7 +140,7 @@ Aceeași problemă la `deleteByBookId` (`BookRepository:104`): scoți cartea din
 
 | Acum (`Main.java:12-14`) | Cum ar trebui |
 |---|---|
-| <pre>Student student = new Student(<br>  "t8v-16-92,Gabriela,...");<br>studentRepository.add(student);</pre> | <pre>String email = "gabriela2.rusu@example.com";<br>if (!studentRepository.existsByEmail(email)) {<br>    studentRepository.add(new Student(...));<br>}<br>System.out.println(studentRepository.count());</pre> |
+| <pre>Student user = new Student(<br>  "t8v-16-92,Gabriela,...");<br>studentRepository.add(user);</pre> | <pre>String email = "gabriela2.rusu@example.com";<br>if (!studentRepository.existsByEmail(email)) {<br>    studentRepository.add(new Student(...));<br>}<br>System.out.println(studentRepository.count());</pre> |
 
 Ai deja `existsByEmail()` scris — nu l-ai folosit niciodată. Un `main` de probă ar trebui să *citească* și să afișeze, nu doar să scrie orbește.
 
@@ -148,9 +148,9 @@ Ai deja `existsByEmail()` scris — nu l-ai folosit niciodată. Un `main` de pro
 
 | Acum (`StudentRepository.java:69-74`) | Cum ar trebui |
 |---|---|
-| <pre>Optional&lt;Student&gt; byEmail =<br>    findByEmail(student.getEmail());<br>if (byEmail.isPresent()<br>    && !byEmail.get().getId()<br>        .equals(student.getId())) {<br>    throw new IllegalArgumentException(...);<br>}<br>students.set(index, student);</pre> | <pre>for (Student other : students) {<br>    if (other == student) continue;<br>    if (other.getId().equals(student.getId())) continue;<br>    if (other.getEmail()<br>          .equalsIgnoreCase(student.getEmail())) {<br>        throw new IllegalArgumentException(<br>            "Email already used: " + student.getEmail());<br>    }<br>}<br>students.set(index, student);</pre> |
+| <pre>Optional&lt;Student&gt; byEmail =<br>    findByEmail(user.getEmail());<br>if (byEmail.isPresent()<br>    && !byEmail.get().getId()<br>        .equals(user.getId())) {<br>    throw new IllegalArgumentException(...);<br>}<br>students.set(index, user);</pre> | <pre>for (Student other : students) {<br>    if (other == user) continue;<br>    if (other.getId().equals(user.getId())) continue;<br>    if (other.getEmail()<br>          .equalsIgnoreCase(user.getEmail())) {<br>        throw new IllegalArgumentException(<br>            "Email already used: " + user.getEmail());<br>    }<br>}<br>students.set(index, user);</pre> |
 
-Diferența e `other == student`: sari peste obiectul însuși prin **identitate de referință**, nu prin id. Comparația pe id nu ajută, pentru că obiectul modificat *are* id-ul corect — el e chiar cel pe care ai voie să-l modifici. Aceeași corecție în `BookRepository.updateBook()` pentru `bookName`.
+Diferența e `other == user`: sari peste obiectul însuși prin **identitate de referință**, nu prin id. Comparația pe id nu ajută, pentru că obiectul modificat *are* id-ul corect — el e chiar cel pe care ai voie să-l modifici. Aceeași corecție în `BookRepository.updateBook()` pentru `bookName`.
 
 ### B3 — constructorul care încarcă
 
@@ -182,7 +182,7 @@ Necesită un `getStudent()` în `Book`. Regula generală pentru relații bidirec
 
 1. `findAll()` face `return new ArrayList<>(students)` — deci returnează o listă nouă. De ce, atunci, `s.setEmail(...)` pe un obiect luat din lista aia modifică și ce e în repository? Ce anume s-a copiat și ce nu?
 
-2. La B2, de ce comparația `!byEmail.get().getId().equals(student.getId())` nu e suficientă, dar `other == student` este? În ce situație concretă cele două dau răspunsuri diferite?
+2. La B2, de ce comparația `!byEmail.get().getId().equals(user.getId())` nu e suficientă, dar `other == user` este? În ce situație concretă cele două dau răspunsuri diferite?
 
 3. `CourseRepository` compilează perfect, fără niciun warning, deși e complet nefuncțional (B3). Ce categorie de erori nu poate prinde compilatorul, principial — și ce ai fi putut face în 30 de secunde ca să prinzi asta singur, înainte de commit?
 

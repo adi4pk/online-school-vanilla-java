@@ -1,17 +1,14 @@
 package app.enrollment.repository;
 
-import app.book.Book;
 import app.enrollment.model.Enrollment;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.time.LocalDate;
 import java.util.*;
 import java.io.PrintWriter;
 import java.util.Scanner;
 import java.util.Optional;
 import java.util.List;
-import java.util.UUID;
 
 
 public class EnrollmentRepository {
@@ -76,7 +73,7 @@ public class EnrollmentRepository {
         return studentEnrollmentsArr;
     }
 
-    public Optional<Enrollment> findByCourseId(String courseId){
+    public Optional<Enrollment> findEnrollmentByCourseId(String courseId){
         for (Enrollment e : enrollments){
             if (e.getCourseId().equals(courseId)){
                 return Optional.of(e);
@@ -95,7 +92,7 @@ public class EnrollmentRepository {
     }
 
     public boolean existsByCourseId(String courseId){
-        return findByCourseId(courseId).isPresent();
+        return findEnrollmentByCourseId(courseId).isPresent();
     }
 
     public int countEnrollments(){

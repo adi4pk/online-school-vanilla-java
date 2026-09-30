@@ -1,6 +1,6 @@
 package app.course.model;
 
-import app.student.model.Student;
+import app.student.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,9 @@ public class Course {
     private String courseName;
     private String department;
 
-    private List<Student> registeredStudents = new ArrayList<>();
+    private String teacherId;
+
+    private List<User> registeredUsers = new ArrayList<>();
 
 
     public Course(String text){
@@ -20,8 +22,11 @@ public class Course {
         this.setCourseId(arr[0]);
         this.setCourseName(arr[1]);
         this.setDepartment(arr[2]);
+        this.setTeacherId(arr[3]);
 
     }
+
+
 
 
     public void setCourseId(String courseId){
@@ -48,11 +53,25 @@ public class Course {
         return department;
     }
 
+    public void setTeacherId(String id){
+        this.teacherId = id;
+    }
+
+    public String getTeacherId(){
+        return teacherId;
+    }
+
+
+
     public String toText(){
         return this.courseId+"," +this.courseName + "," + this.department;
     }
 
 
+    @Override
+    public String toString(){
+        return this.courseId+"," +this.courseName + "," + this.department + "\n";
+    }
 
 
 

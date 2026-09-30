@@ -23,25 +23,25 @@ public class StudentRepository{
         return students.size();
     }
 
-	public Student add(Student student) {			//returneaza Student -- seteaza ID la student --> adauga studentul in students arr --> save()
-        if (existsByEmail(student.getEmail())) {
-            throw new IllegalArgumentException("Email already used: " + student.getEmail());
+	public Student add(Student user) {			//returneaza Student -- seteaza ID la user --> adauga studentul in students arr --> save()
+        if (existsByEmail(user.getEmail())) {
+            throw new IllegalArgumentException("Email already used: " + user.getEmail());
         }
-        student.setId(UUID.randomUUID().toString());        //????
-        students.add(student);
+        user.setId(UUID.randomUUID().toString());        //????
+        students.add(user);
         save();
-        return student;
+        return user;
     }
 
 	
-	public Student update(Student student) {		//returneaza Student -- modifica element in lista students arr --> save()
+	public Student update(Student user) {		//returneaza Student -- modifica element in lista students arr --> save()
 
-	int index = indexOf(student.getId());   //studentul pe care îl modifici -- return index from .getId()
-	students.set(index, student);  //int index, E element -- inlocuieste studentul de la indexul x cu studentul modificat.
+	int index = indexOf(user.getId());   //studentul pe care îl modifici -- return index from .getId()
+	students.set(index, user);  //int index, E element -- inlocuieste studentul de la indexul x cu studentul modificat.
         save();
     }
 
-	public void deleteById(String id){		//gaseste indexul cu indexOf() --> .remove() student din lista students
+	public void deleteById(String id){		//gaseste indexul cu indexOf() --> .remove() user din lista students
     }
 
 	private void loadData(){	//creeaza fisierul .txt
@@ -55,7 +55,7 @@ public class StudentRepository{
 
 	public void save(){	//overwrite function	--> dupa ce construieste StringBuilder --> scrie cu printer in fisier
 		StringBuilder content = new StringBuilder();
-		content.append(student.toText()).append(System.lineSeparator());        // "\n"
+		content.append(user.toText()).append(System.lineSeparator());        // "\n"
 
 		try (PrintWriter writer = new PrintWriter(FILE_PATH))
 		writer.print(content);
