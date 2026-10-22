@@ -1,9 +1,13 @@
 package app;
 
+import app.Meniu.MeniuRol;
+import app.Meniu.MeniuStudent;
+import app.Meniu.MeniuTeacher;
 import app.book.Book;
 import app.book.repository.BookRepository;
 import app.course.repository.CourseRepository;
 import app.course.model.Course;
+import app.student.model.Student;
 import app.student.model.Teacher;
 import app.student.model.User;
 import app.enrollment.repository.EnrollmentRepository;
@@ -22,6 +26,8 @@ public class View {
     private EnrollmentRepository enrollmentRepository;
     private CourseRepository courseRepository;
 
+    private MeniuRol meniuRol;
+
     public View(){
         this.user = new Teacher("9755fd14-6373-4854-b98f-d8298379b95c,Alexandra,Tudor,alexandra.tudor@example.com,Alpha321,25");
         this.scanner= new Scanner(System.in);       //este un obiect care știe să citească caractere dintr-o sursă.
@@ -29,68 +35,38 @@ public class View {
         this.userRepository = new UserRepository();
         this.enrollmentRepository= new EnrollmentRepository();
         this.courseRepository = new CourseRepository();
+
+
+//        MeniuRol meniuRol = alegeMeniu();   // GRESIT - shadowing -> atributul/proprietatea este redeclarata si overwritten.
+        meniuRol = alegeMeniu();         //nu mai declaram tipul obiectului, stim ca este MeniuRol din proprietate
         this.play();
 
 
+
     }
 
+
+    private MeniuRol alegeMeniu(){
+        if (user.getRol().equals("TEACHER")){
+            return new MeniuTeacher(this);
+        }
+        return new MeniuStudent(this);
+    }
 
     public void play(){     //ruleaza din Constructor()
 
-        int alegere=-1;
-        while (alegere != 0) {      //menu() o sa ruleze si o sa fie afisat de fiecare data.
-
-            meniu();
-            alegere=Integer.parseInt(scanner.nextLine());  //threadul principal este blocat și așteaptă -->  //e.g. 0 / 1 / 2 etc...
-            switch (alegere){
-                case 1:
-                    showStudentBooks();
-                    break;
-                case 2:
-                    deleteBook();
-                    break;
-                case 3:
-                    addBook();
-                    break;
-                case 4:
-                    editBook();
-                    break;  //MAKE SURE YOU use break, otherwise the code block keeps going down to case 0;
-                case 5:
-                    showCoursesByEnrollments();
-                    break;
-                case 6:
-                    showAllCourses();
-                    break;
-                case 7:
-                    removeCourse();
-                    break;
-                case 8:
-                    playTeacher();
-                    break;
-                case 0:
-                    System.out.println("Bye");
-                    break;
-                    default:
-                        System.out.println("invalid choice");
-            }
+        boolean continua = true;
+        while (continua){       //menu() o sa ruleze si o sa fie afisat de fiecare data -> pana cand meniuRol.executa() returneaza false;
+            meniuRol.afiseazaOptiuni(); //
+            continua = meniuRol.executa(Integer.parseInt(scanner.nextLine()));  //meniuRol executa un integer si -> returneaza true/false
         }
 
-    }
+
+         //threadul principal este blocat și așteaptă -->  //e.g. 0 / 1 / 2 etc...
 
 
 
 
-    public  void meniu(){
-
-        System.out.println("1-show books");
-        System.out.println("2-delete book");
-        System.out.println("3-add book");
-        System.out.println("4-edit book");
-        //show my enrolments -- findAllEnrollmentsByStudentId(String studentId)
-        System.out.println("5-show my enrollments");
-        System.out.println("6-show available courses");
-        System.out.println("7-inscrie-te la un curs:");
-        System.out.println("8- TEACHER");
     }
 
     public  void showStudentBooks(){
@@ -243,13 +219,7 @@ public class View {
                     showCoursesByTeacher();
                     break;
                 case 2:
-                    System.out.println("Introdu numele cursului: ");
-                    String chooseCourse = scanner.nextLine();
-
-                    if (courseRepository.existsByCourseName(chooseCourse)){
-                        Course foundCourse = courseRepository.findByCourseName(chooseCourse).get();
-                        System.out.println(showStudentsByCourseName(foundCourse.getCourseName()));
-                    } else System.out.println("Cursul nu a fost gasit.");
+                    showStudentsFromCourse();
                     break;
                 case 0:
                     break;
@@ -290,6 +260,15 @@ public class View {
     }
 
 
+    public void showStudentsFromCourse(){
+        System.out.println("Introdu numele cursului: ");
+        String chooseCourse = scanner.nextLine();
+
+        if (courseRepository.existsByCourseName(chooseCourse)){
+            Course foundCourse = courseRepository.findByCourseName(chooseCourse).get();
+            System.out.println(showStudentsByCourseName(foundCourse.getCourseName()));
+        } else System.out.println("Cursul nu a fost gasit.");
+    }
 
     //functie care returneaza lista studenti pentru un SINGUR CURS;
     public List<User> showStudentsByCourseName(String courseName){
@@ -351,6 +330,16 @@ public class View {
         return userType.isPresent() && userType.get().getRol().equals("TEACHER");
 
         //if type is TEACHER --> return true;
+    }
+
+    public String checkUserRole(User user){
+        Optional<User> userRole = userRepository.findUserTypeById(user.getId());
+
+        if(userRole.isPresent()){
+            userRole.get().getRol();
+        };
+
+        return "user not found";
     }
 
 }

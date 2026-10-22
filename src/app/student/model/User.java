@@ -5,7 +5,7 @@ import app.course.model.Course;
 
 import java.util.List;
 
-//constructor care ia ca parametru "a5e-12-32,bogdan,test,test@ceva,pass,12"
+//constructor care ia ca parametru "a5e-12-32,bogdan,test,test@showStudentsFromCourse,pass,12"
 public class User {
     private String id;
     private String firstName;
