@@ -1,7 +1,6 @@
-package app.Meniu;
+package app.meniu;
 
 import app.View;
-import app.course.model.Course;
 
 public class MeniuTeacher implements MeniuRol{
 

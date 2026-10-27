@@ -1,4 +1,4 @@
-package app.student.model;
+package app.users.model;
 //todo:validatori
 
 import app.course.model.Course;

@@ -1,7 +1,7 @@
 package app.course.repository;
 
 import app.course.model.Course;
-import app.student.model.Teacher;
+import app.users.model.Teacher;
 
 import java.io.File;
 import java.io.FileNotFoundException;

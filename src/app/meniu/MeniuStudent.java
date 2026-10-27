@@ -1,4 +1,4 @@
-package app.Meniu;
+package app.meniu;
 
 import app.View;
 
@@ -21,7 +21,7 @@ public class MeniuStudent implements MeniuRol{
         System.out.println("5-show my enrollments");
         System.out.println("6-show available courses");
         System.out.println("7-inscrie-te la un curs:");
-        System.out.println("8- ////TEACHER");
+        System.out.println("8-inscrie-te la un curs");
     }
 
     public boolean executa(int alegere){
@@ -35,6 +35,7 @@ public class MeniuStudent implements MeniuRol{
                  break;
              case 3:
                  view.addBook();
+                 break;
              case 4:
                  view.editBook();
                  break;
@@ -47,6 +48,8 @@ public class MeniuStudent implements MeniuRol{
              case 7:
                  view.removeCourse();
                  break;
+             case 8:
+                 view.registerForCourse();
              case 0:
                  return false;
              default:

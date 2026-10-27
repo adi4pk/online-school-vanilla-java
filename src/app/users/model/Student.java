@@ -1,4 +1,4 @@
-package app.student.model;
+package app.users.model;
 
 public class Student extends User {
 

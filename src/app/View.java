@@ -1,18 +1,21 @@
 package app;
 
-import app.Meniu.MeniuRol;
-import app.Meniu.MeniuStudent;
-import app.Meniu.MeniuTeacher;
+import app.enrollment.observers.JurnalInscrieri;
+import app.enrollment.observers.NotificareProfesor;
+import app.enrollment.observers.ObservatorInscriere;
+import app.meniu.MeniuRol;
+import app.meniu.MeniuStudent;
+import app.meniu.MeniuTeacher;
 import app.book.Book;
 import app.book.repository.BookRepository;
 import app.course.repository.CourseRepository;
 import app.course.model.Course;
-import app.student.model.Student;
-import app.student.model.Teacher;
-import app.student.model.User;
+import app.users.model.Student;
+import app.users.model.Teacher;
+import app.users.model.User;
 import app.enrollment.repository.EnrollmentRepository;
 import app.enrollment.model.Enrollment;
-import app.student.repository.UserRepository;
+import app.users.repository.UserRepository;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -28,13 +31,18 @@ public class View {
 
     private MeniuRol meniuRol;
 
+
+
     public View(){
-        this.user = new Teacher("9755fd14-6373-4854-b98f-d8298379b95c,Alexandra,Tudor,alexandra.tudor@example.com,Alpha321,25");
+        this.user = new Student("t8v-16-92,Gabriela,Rusu,gabriela.rusu@example.com,Gamma987,27");
         this.scanner= new Scanner(System.in);       //este un obiect care știe să citească caractere dintr-o sursă.
         this.bookRepository = new BookRepository();
         this.userRepository = new UserRepository();
         this.enrollmentRepository= new EnrollmentRepository();
         this.courseRepository = new CourseRepository();
+
+        this.enrollmentRepository.abonare(new NotificareProfesor(courseRepository, userRepository));
+        this.enrollmentRepository.abonare(new JurnalInscrieri(courseRepository, userRepository));
 
 
 //        MeniuRol meniuRol = alegeMeniu();   // GRESIT - shadowing -> atributul/proprietatea este redeclarata si overwritten.
@@ -95,6 +103,7 @@ public class View {
     }
 
     public void registerForCourse(){
+        showAllCourses();
         System.out.println("Introdu numele cursului la care vrei sa te inregistrezi:");
         String courseName = scanner.nextLine();
         Optional<Course> foundCourse = courseRepository.findByCourseName(courseName);
@@ -102,7 +111,9 @@ public class View {
             try{
                 Enrollment newEnrollment = new Enrollment(user.getId(), foundCourse.get().getCourseId(), LocalDate.now());
                 enrollmentRepository.addEnrollment(newEnrollment);
+                foundCourse.get().addStudentsToCourse((Student)user);
                 System.out.println("enrolled");
+
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -197,42 +208,42 @@ public class View {
 
     }
 
-    public void teacherMeniu() {
-        System.out.println("OK, you are telling the truth! - TEACHER");
-        System.out.println("1-show Courses");
-        System.out.println("2 - MY STUDENTS");
-        System.out.println("0 - go back");
+//    public void teacherMeniu() {
+//        System.out.println("OK, you are telling the truth! - TEACHER");
+//        System.out.println("1-show Courses");
+//        System.out.println("2 - MY STUDENTS");
+//        System.out.println("0 - go back");
+//
+//    }
 
-    }
-
-    public void playTeacher(){
-
-        int selectOption = -1;
-        while (selectOption !=0){
-
-            teacherMeniu();
-
-            selectOption = Integer.parseInt(scanner.nextLine());
-
-            switch (selectOption){
-                case 1:
-                    showCoursesByTeacher();
-                    break;
-                case 2:
-                    showStudentsFromCourse();
-                    break;
-                case 0:
-                    break;
-                default:
-                    System.out.println("invalid choice");
-            }
-
-            //return is unnecessary in a void function as last statement.
-        }
-//        String selectOption = scanner.nextLine();
-
-
-    }
+//    public void playTeacher(){
+//
+//        int selectOption = -1;
+//        while (selectOption !=0){
+//
+//            teacherMeniu();
+//
+//            selectOption = Integer.parseInt(scanner.nextLine());
+//
+//            switch (selectOption){
+//                case 1:
+//                    showCoursesByTeacher();
+//                    break;
+//                case 2:
+//                    showStudentsFromCourse();
+//                    break;
+//                case 0:
+//                    break;
+//                default:
+//                    System.out.println("invalid choice");
+//            }
+//
+//            //return is unnecessary in a void function as last statement.
+//        }
+////        String selectOption = scanner.nextLine();
+//
+//
+//    }
 
         //use Student ID to find Enrollments --> get course ID from Enrollment property (course ID)
         // --> create a <Course> courseList based on courseIds List

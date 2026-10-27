@@ -1,4 +1,4 @@
-package app.Meniu;
+package app.meniu;
 
 public interface MeniuRol {
 

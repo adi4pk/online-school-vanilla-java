@@ -24,7 +24,7 @@ Comentariile de studiu din cod (ce returnează fiecare metodă, de ce `continue`
 
 ```
 Exception in thread "main" java.lang.IllegalArgumentException: Email already used: gabriela2.rusu@example.com
-	at app.student.repository.StudentRepository.add(StudentRepository.java:56)
+	at app.users.repository.StudentRepository.add(StudentRepository.java:56)
 	at app.Main.main(Main.java:14)
 ```
 
@@ -118,7 +118,7 @@ Aceeași problemă la `deleteByBookId` (`BookRepository:104`): scoți cartea din
 
 - **M4 — validarea de unicitate pe numele cărții.** `addBook():67` refuză a doua carte cu același titlu. Într-o școală vrei, probabil, două exemplare din „Clean Code". Dacă da, unicitatea trebuie mutată pe id, iar `existsByBookName` rămâne doar căutare. Decizie de modelare — spune tu care e intenția.
 
-- **M5 — `Book` nu e în `app.book.model`.** `Student` e în `app.student.model`, `Course` în `app.course.model`, `Book` direct în `app.book`. Structura devine imprevizibilă când crește.
+- **M5 — `Book` nu e în `app.book.model`.** `Student` e în `app.users.model`, `Course` în `app.course.model`, `Book` direct în `app.book`. Structura devine imprevizibilă când crește.
 
 ---
 

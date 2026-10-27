@@ -1,6 +1,7 @@
 package app.course.model;
 
-import app.student.model.User;
+import app.users.model.Student;
+import app.users.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,9 @@ public class Course {
 
 
 
+    public void addStudentsToCourse(Student student){
+        registeredUsers.add(student);
+    }
 
     public void setCourseId(String courseId){
         this.courseId = courseId;

@@ -1,6 +1,6 @@
-package app.student.repository;
+package app.users.repository;
 
-import app.student.model.User;
+import app.users.model.User;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.UUID;
 
-import app.student.model.Teacher;
+import app.users.model.Teacher;
 
 public class UserRepository {
 

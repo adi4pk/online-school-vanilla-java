@@ -1,6 +1,7 @@
 package app.enrollment.repository;
 
 import app.enrollment.model.Enrollment;
+import app.enrollment.observers.ObservatorInscriere;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,10 +17,14 @@ public class EnrollmentRepository {
     private static final String FILE_PATH = "src/app/enrollment/data/enrollments.txt";
 
     private final List<Enrollment> enrollments = new ArrayList<>();
+    private List<ObservatorInscriere> observatoriInscriereArr;
+
+
 
     public EnrollmentRepository(){
 
         loadData();
+        this.observatoriInscriereArr = new ArrayList<>();
     }
 
 //    public Enrollment addEnrollment(String studentId, String courseId, LocalDate createdAt){
@@ -27,21 +32,45 @@ public class EnrollmentRepository {
 ////        Enrollment enrollment = new Enrollment();
 //    };
 
+    public void abonare(ObservatorInscriere observer) {
+        observatoriInscriereArr.add(observer);
+}
+
+    public void dezabonare(ObservatorInscriere observer){
+        observatoriInscriereArr.remove(observer);
+    }
+
+
+
+
     public Enrollment addEnrollment(Enrollment enrollment){
         if(this.checkEnrollmentByStudentId(enrollment.getStudentId(), enrollment.getCourseId())){
             throw new IllegalArgumentException("You are already registered for this course.");
         }
         enrollments.add(enrollment);
         save();
+
+        for(ObservatorInscriere observer : observatoriInscriereArr){
+            observer.laInscriere(enrollment);
+        }
+
         return enrollment;
     }
 
 
     public void deleteById(String studentId, String courseId) {
         int index = indexOf(studentId, courseId);
+
         if (index == -1) {
             throw new IllegalArgumentException("Enrollment not found: " + studentId +", " + courseId);
         }
+
+        for (ObservatorInscriere observer : observatoriInscriereArr){
+            observer.laRenuntare(enrollments.get(index));
+        }
+
+
+
         enrollments.remove(index);
         save();
     }
