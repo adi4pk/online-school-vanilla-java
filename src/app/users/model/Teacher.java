@@ -32,7 +32,7 @@ public class Teacher extends User {
 
     @Override
     public String toText(){
-        return getRol() + super.toText();
+        return getRol()+ "," + super.toText();
     }
 
 }

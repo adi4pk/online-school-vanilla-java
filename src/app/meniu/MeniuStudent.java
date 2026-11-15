@@ -20,7 +20,7 @@ public class MeniuStudent implements MeniuRol{
         //show my enrolments -- findAllEnrollmentsByStudentId(String studentId)
         System.out.println("5-show my enrollments");
         System.out.println("6-show available courses");
-        System.out.println("7-inscrie-te la un curs:");
+        System.out.println("7-remove course");
         System.out.println("8-inscrie-te la un curs");
     }
 
@@ -50,6 +50,7 @@ public class MeniuStudent implements MeniuRol{
                  break;
              case 8:
                  view.registerForCourse();
+                 break;
              case 0:
                  return false;
              default:

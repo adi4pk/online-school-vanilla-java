@@ -33,6 +33,7 @@ public class cardRepository {
     private void loadData(){
         File file = new File(FILE_PATH); //-- creeaza o reprezentare a fisierului
         if(!file.exists()){
+            System.out.println("Loading failed, check the path " + FILE_PATH);
             return;
         }
 

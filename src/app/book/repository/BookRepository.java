@@ -47,6 +47,20 @@ public class BookRepository {
         return Optional.empty();
     }
 
+    public Optional<Book> findByBookNameAndStudentId(String bookName, String studentId){
+
+
+        for (Book book: books){
+            if (book.getBookName().equals(bookName) && book.getStundentId().equals(studentId)){
+                return Optional.of(book);
+            }
+        }
+
+        return  Optional.empty();
+
+    }
+
+
     public boolean existsByBookName(String bookName){
         return findByBookName(bookName).isPresent();
     }
@@ -122,6 +136,7 @@ public class BookRepository {
         }
 
         book.setBookName(newName);
+        save();
         return book;
     }
 
@@ -156,6 +171,7 @@ public class BookRepository {
     private void loadData(){
         File file = new File(FILE_PATH);
         if(!file.exists()){
+            System.out.println("Loading failed, check the path " + FILE_PATH);
             return;
         }
 

@@ -33,6 +33,10 @@ public class Course {
         registeredUsers.add(student);
     }
 
+    public void removeStudentFromCourse(Student student){
+        registeredUsers.remove(student);
+    }
+
     public void setCourseId(String courseId){
         this.courseId = courseId;
     }
@@ -68,7 +72,7 @@ public class Course {
 
 
     public String toText(){
-        return this.courseId+"," +this.courseName + "," + this.department;
+        return this.courseId+"," +this.courseName + "," + this.department+"," + this.getTeacherId();
     }
 
 

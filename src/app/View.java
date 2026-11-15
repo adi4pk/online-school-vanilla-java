@@ -34,7 +34,7 @@ public class View {
 
 
     public View(){
-        this.user = new Student("t8v-16-92,Gabriela,Rusu,gabriela.rusu@example.com,Gamma987,27");
+        this.user = new Teacher("t8v-16-92,Gabriela,Rusu,gabriela.rusu@example.com,Gamma987,27");
         this.scanner= new Scanner(System.in);       //este un obiect care știe să citească caractere dintr-o sursă.
         this.bookRepository = new BookRepository();
         this.userRepository = new UserRepository();
@@ -52,6 +52,23 @@ public class View {
 
 
     }
+
+    public User getViewUser(){
+
+        return this.user;
+    }
+
+    public CourseRepository getCourseRepo(){
+        return this.courseRepository;
+    }
+
+
+
+
+
+
+
+    //########################
 
 
     private MeniuRol alegeMeniu(){
@@ -123,24 +140,40 @@ public class View {
 
     public void removeCourse(){
         System.out.println("Introdu numele cursului: ");
-        System.out.println("Type 0 to go back");
 
-        String courseName = scanner.nextLine();
+        while (true){
+            System.out.println("Type 0 to go back");
+            String courseName = scanner.nextLine();
 
-        if (courseName.equals("0")){
-            return;
+            if (courseName.equals("0")){
+                return;
+            }
+
+            if(courseName.isEmpty()){
+                System.out.println("Introdu un nume valid.");
+                continue;
+            }
+
+            Optional<Course> foundCourseByName = courseRepository.findByCourseName(courseName);
+
+            if (foundCourseByName.isEmpty()){
+                System.out.println("Cursul " + courseName + " nu a fost gasit.");
+                continue;
+            }
+
+            if (foundCourseByName.isPresent()){
+                try{ Optional<Enrollment> enrollmentToRemove = enrollmentRepository.findByStudentIdAndCourseId(this.user.getId(), foundCourseByName.get().getCourseId());
+                    enrollmentRepository.deleteById(enrollmentToRemove.get().getStudentId(), enrollmentToRemove.get().getCourseId());
+                    foundCourseByName.get().removeStudentFromCourse((Student) this.user);
+                    System.out.println("Te-ai retras de la cursul " + foundCourseByName.get());
+                }
+                catch (Exception e){
+                    System.out.println("Nu esti inregistrat la cursul " + foundCourseByName.get().getCourseName());
+                    e.printStackTrace();
+                }
+            }
         }
 
-        Optional<Course> foundCourseByName = courseRepository.findByCourseName(courseName);
-
-        if (foundCourseByName.isPresent()){
-            try{ Optional<Enrollment> enrollmentToRemove = enrollmentRepository.findByStudentIdAndCourseId(this.user.getId(), foundCourseByName.get().getCourseId());
-                enrollmentRepository.deleteById(enrollmentToRemove.get().getStudentId(), enrollmentToRemove.get().getCourseId());
-            }
-            catch (Exception e){
-                e.printStackTrace();
-            }
-        }
 
     }
 
@@ -184,27 +217,68 @@ public class View {
         //System.out.println("Book name changed to" + bookName);
     }
 
+//////////////////////////////////////////////////
 
     public void deleteBook(){
-        System.out.println("Enter the book name");
-        System.out.println("Type 0 to go back to the main menu.");
-        String bookName=scanner.nextLine();
 
-        if(bookName.equals("0")){
-            return;
-        }
+        System.out.println("Enter the book name");      //separam textul de inceput care ruleaza doar o data de textul din while Loop - Type 0 ... se afiseaza la fiecare iteratie
 
-        try{
-            boolean erased=bookRepository.deleteByBookName(bookName);
-            if(erased){
-                System.out.println("success");
-            }else{
+        while (true){   // se repeta mereu pana intalneste -> return;
+            System.out.println("Type 0 to go back to the main menu.");
+            String bookName=scanner.nextLine();
 
-                System.out.println("The book doesn't exist");
+            if(bookName.equals("0")){
+                return;
             }
-        } catch (Exception ex){
-            ex.printStackTrace();
+
+
+            if (bookName.isEmpty()){
+                System.out.println("Introdu un nume valid.");
+                bookName = scanner.nextLine();
+
+                continue;
+            }
+
+            if(!bookRepository.existsByBookName(bookName)){
+                System.out.println("Cartea " + bookName + " nu exista.");
+                continue;
+            }
+
+            Optional<Book> book = bookRepository.findByBookNameAndStudentId(bookName, user.getId());
+            if (book.isEmpty()){
+                System.out.println("NU poti sterge cartea " + bookName + ", apartine altui student");
+                continue;
+            }
+
+
+            try{
+                boolean erased=bookRepository.deleteByBookName(bookName);
+                if(erased){
+                    System.out.println("success");
+                }else{
+
+                    System.out.println("The book doesn't exist in the REPO");
+                }
+            } catch (Exception ex){
+                ex.printStackTrace();
+            }
+
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
 

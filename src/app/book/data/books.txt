@@ -1,6 +1,5 @@
 t8v-16-92,Clean Code,2024-01-15,a5e-12-32
 k3m-47-81,Design Patterns,2023-11-07,c8f-45-71
-p9x-22-64,Refactoring,2022-06-19,c8f-45-71
 r5j-88-13,Effective Java,2021-09-30,c8f-45-71
 n2q-14-75,Java Concurrency in Practice,2020-12-11,c8f-45-71
 b7c-39-58,Head First Java,2024-03-22,c8f-45-71

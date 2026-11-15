@@ -144,6 +144,7 @@ public class CourseRepository {
     private void loadData(){
         File file = new File(FILE_PATH);
         if(!file.exists()){
+            System.out.println("Loading failed, check the path " + FILE_PATH);
             return;
         }
 

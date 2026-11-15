@@ -15,7 +15,7 @@ import app.users.model.Teacher;
 
 public class UserRepository {
 
-    private static final String FILE_PATH = "src/app/student/data/users.txt";
+    private static final String FILE_PATH = "src/app/users/data/users.txt";
 
     private final List<User> users = new ArrayList<>();
 
@@ -112,6 +112,7 @@ public class UserRepository {
     private void loadData() {
         File file = new File(FILE_PATH);        // de ce cream obiectul aici si nu in proprietati? il recream de fiecare data cand facem load()
         if (!file.exists()) {
+            System.out.println("Loading failed, check the path " + FILE_PATH);
             return;
         }
         try (Scanner scanner = new Scanner(file)) {
