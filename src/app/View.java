@@ -34,7 +34,7 @@ public class View {
 
 
     public View(){
-        this.user = new Teacher("t8v-16-92,Gabriela,Rusu,gabriela.rusu@example.com,Gamma987,27");
+//        this.user = new Student("t8v-16-92,Gabriela,Rusu,gabriela.rusu@example.com,Gamma987,27");
         this.scanner= new Scanner(System.in);       //este un obiect care știe să citească caractere dintr-o sursă.
         this.bookRepository = new BookRepository();
         this.userRepository = new UserRepository();
@@ -122,19 +122,40 @@ public class View {
     public void registerForCourse(){
         showAllCourses();
         System.out.println("Introdu numele cursului la care vrei sa te inregistrezi:");
-        String courseName = scanner.nextLine();
-        Optional<Course> foundCourse = courseRepository.findByCourseName(courseName);
-        if (foundCourse.isPresent()){
-            try{
-                Enrollment newEnrollment = new Enrollment(user.getId(), foundCourse.get().getCourseId(), LocalDate.now());
-                enrollmentRepository.addEnrollment(newEnrollment);
-                foundCourse.get().addStudentsToCourse((Student)user);
-                System.out.println("enrolled");
 
-            }catch (Exception e){
-                e.printStackTrace();
+        while (true){
+            System.out.println("Type 0 to go back");
+            String courseName = scanner.nextLine();
+
+            if (courseName.equals("0")){
+                return;
+            }
+
+            if (courseName.isEmpty()){
+                System.out.println("Introdu un nume valid");
+                continue;
+            }
+
+
+
+            Optional<Course> foundCourse = courseRepository.findByCourseName(courseName);
+            if (foundCourse.isPresent()){
+                try{
+                    Enrollment newEnrollment = new Enrollment(user.getId(), foundCourse.get().getCourseId(), LocalDate.now());
+                    enrollmentRepository.addEnrollment(newEnrollment);
+                    foundCourse.get().addStudentsToCourse((Student)user);
+                    System.out.println("enrolled");
+                    return;
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            } else {
+                System.out.println("Cursul nu a fost gasit.");
             }
         }
+
+
 
     }
 

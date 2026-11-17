@@ -10,8 +10,10 @@ public class Teacher extends User {
     private List<Course> coursesList = new ArrayList<>();
     protected String rol = "TEACHER";
 
-    public Teacher(String text){
-        super(text);
+    public Teacher(String[] campuri){
+        super(campuri);
+
+        //coursesList este assigned by default, la fel si rol
     }
 
 

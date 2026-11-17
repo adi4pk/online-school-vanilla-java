@@ -23,7 +23,7 @@ public class Main {
 
 
         View view = new View();
-        User user = new Student("c8f-45-71,Marculescu,Alexandru,Marculescu.Alexandru@example.com,Secret456,24");
+//        User user = new Student("c8f-45-71,Marculescu,Alexandru,Marculescu.Alexandru@example.com,Secret456,24");
 
         Course curs1 = new Course("C011,Macroeconomie,Marketing,9000fd14-6373-4854-b98f-d8298379b95c");
 

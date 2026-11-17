@@ -5,8 +5,12 @@ public class Student extends User {
     protected String rol = "STUDENT";
 
 
-    public Student(String text){
-        super(text);
+    public Student(String[] campuri){
+//        super(row); X
+        super(campuri);
+
+        //this.rol este assigned by default
+        //pastram setter in caz de schimbare tip user
     }
 
     @Override

@@ -1,6 +1,6 @@
 package app.users.repository;
 
-import app.users.model.User;
+import app.users.model.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,15 +11,23 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.UUID;
 
-import app.users.model.Teacher;
-
 public class UserRepository {
 
     private static final String FILE_PATH = "src/app/users/data/users.txt";
 
     private final List<User> users = new ArrayList<>();
+    private final IncarcatorUsers incarcatorUsers;
 
     public UserRepository() {
+
+
+        List<FabricaUser> arrFabrici = new ArrayList<>(
+                List.of(new FabricaStudent(),
+                        new FabricaProfesor())
+        );
+
+        this.incarcatorUsers = new IncarcatorUsers(arrFabrici);
+
         loadData();
     }
 
@@ -117,25 +125,51 @@ public class UserRepository {
         }
         try (Scanner scanner = new Scanner(file)) {
             int lineNumber = 0;
+
+            List<String> liniiText = new ArrayList<>();     //instantiem lista de Stringuri pentru IncarcatorUsers
+
             while (scanner.hasNextLine()) {     //Mai există o linie? if true -> continua | if false -> stop loop
                 lineNumber++;   //incrementam direct lineNumber la 1 -> pentru ca in documente, numerotarea liniilor incepe de la 1.
                 String line = scanner.nextLine().trim();   //citește următoarea linie. -- returneaza un String by default
+
                 if (line.isEmpty()) {
                     continue;      //--> sari peste iterația curentă -- dar continuă bucla
                 }
-                try {
-                    users.add(new User(line));
-                } catch (RuntimeException ex) {     //NumberFormatException -- in cazul in care dam um String | e.g. age = "x" - eroare la parsare().
-                    throw new IllegalStateException("Invalid student at line " + lineNumber + ": " + line, ex);
 
-                    //Dacă apare o excepție de tip RuntimeException (sau o subclasă a ei),
-                    //pune obiectul excepției în variabila ex și execută blocul catch.
-                }
+                liniiText.add(line);    //adauga fiecare linie la List<String> pentru IncarcatorUsers
+
+
+
             }
-        } catch (FileNotFoundException ex) {        //type -> FileNotFoundException, variable -> ex
+            try {
+                List<User> usersIncarcati = incarcatorUsers.incarca(liniiText);
+                    this.users.addAll(usersIncarcati);
+
+            } catch (RuntimeException ex) {     //NumberFormatException -- in cazul in care dam um String | e.g. age = "x" - eroare la parsare().
+//                throw new IllegalStateException("Invalid student at line " + lineNumber + ": " + line, ex); -- to be deleted
+                throw new IllegalStateException("Invalid users data", ex);
+
+                //Dacă apare o excepție de tip RuntimeException (sau o subclasă a ei),
+                //pune obiectul excepției în variabila ex și execută blocul catch.
+            }
+    }
+        catch (FileNotFoundException ex) {        //type -> FileNotFoundException, variable -> ex
             throw new IllegalStateException("Cannot read file: " + file.getAbsolutePath(), ex);  //String mesaj, Throwable ex --> variable ex becomes the cause
         }
     }
+
+
+    //###########################
+
+
+
+
+
+
+
+
+
+
 
     private void save() {     //OVERWRITE function
         StringBuilder content = new StringBuilder();
