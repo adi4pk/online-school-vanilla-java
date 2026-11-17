@@ -45,6 +45,9 @@ public class View {
         this.enrollmentRepository.abonare(new JurnalInscrieri(courseRepository, userRepository));
 
 
+        login();
+
+
 //        MeniuRol meniuRol = alegeMeniu();   // GRESIT - shadowing -> atributul/proprietatea este redeclarata si overwritten.
         meniuRol = alegeMeniu();         //nu mai declaram tipul obiectului, stim ca este MeniuRol din proprietate
         this.play();
@@ -58,6 +61,79 @@ public class View {
         return this.user;
     }
 
+
+
+    public void login(){
+        System.out.println("Introdu emailul");
+
+        int noTries = 0;
+        int noTriesPass = 0;
+
+
+        while (noTries<3){
+
+            noTries++;
+            String email = scanner.nextLine();
+            if (email == null || email.isBlank()){
+                System.out.println("Campul nu poate fi gol");
+                if (noTries >= 3){
+                    System.out.println("Numarul maxim de incercari a fost atins. La revedere!");
+                }
+                continue;
+            }
+
+
+                Optional<User> user = userRepository.findByEmail(email);
+                if (user.isPresent()){
+                    boolean logat = false;
+
+                    User loggedUser = user.get();
+                    System.out.println("Enter password for: " + loggedUser.getEmail());
+
+
+                    while (noTriesPass<3){
+
+                        noTriesPass++;
+                        String pass = scanner.nextLine();       //required field -- trebuie sa stea in interiorul while-loop, trebuie reprompted la fiecare iteratie, altfel se verifica aceeasi valoare mereu.
+
+                        if(pass == null || pass.isBlank()){
+                            System.out.println("Introdu parola -- empty spaces");
+                            continue;
+                        }
+                        if (!pass.equals(loggedUser.getPassword())){
+                            if (noTriesPass <=2){
+                                System.out.println("Parola incorecta.\nIncearca din nou:");
+                                continue;
+                            }
+                            break;
+
+                        }
+
+                        logat = true;
+                        break;      //break -- ca sa iesim din bucla,
+                                    // NU return -> return ne scoate din functie.
+
+
+
+                    }
+                    if (logat){
+                        System.out.println("Logare cu succes!");
+                        this.user = loggedUser;
+                        return;
+                    }
+                    else {
+                        System.out.println("Numarul maxim de incercari a fost atins.");
+                        return;
+                    }
+
+                } else {
+                    System.out.println("Email incorect.");
+                    if (noTries >= 3){
+                        System.out.println("Numarul maxim de incercari a fost atins. Iesi acasa!");
+                    }
+                }
+        }
+    }
     public CourseRepository getCourseRepo(){
         return this.courseRepository;
     }

@@ -27,7 +27,7 @@ public class Main {
 
         Course curs1 = new Course("C011,Macroeconomie,Marketing,9000fd14-6373-4854-b98f-d8298379b95c");
 
-        Enrollment enrollment1 = new Enrollment(user.getId(), curs1.getCourseId(), LocalDate.now());
+//        Enrollment enrollment1 = new Enrollment(user.getId(), curs1.getCourseId(), LocalDate.now());
 
         UserRepository userRepo = new UserRepository();
 //        System.out.println(userRepo.findAll().toString());
