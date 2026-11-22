@@ -22,8 +22,11 @@ public class UserRepository {
 
 
         List<FabricaUser> arrFabrici = new ArrayList<>(
-                List.of(new FabricaStudent(),
-                        new FabricaProfesor())
+                List.of(
+                        new FabricaStudent(),
+                        new FabricaProfesor(),
+                        new FabricaAdmin()
+                )
         );
 
         this.incarcatorUsers = new IncarcatorUsers(arrFabrici);
@@ -105,6 +108,16 @@ public class UserRepository {
         }
         users.remove(index);
         save();
+    }
+
+    public void deleteByEmail(String email){
+
+        Optional<User> foundUser = findByEmail(email);
+        if (foundUser.isPresent()){
+            System.out.println("User " + foundUser.get().getEmail() + " has been deleted.");
+            deleteById(foundUser.get().getId());
+        }
+
     }
 
     private int indexOf(String id) {        //returneaza un int care e egal cu pozitia lui Student in students arr

@@ -361,20 +361,36 @@ public class View {
             }
 
         }
+    }
 
 
+    //////// ADMIN ///////
+
+    public List<User> showUsers(){
+
+        List<User> arrUsers = userRepository.findAll();
+        return arrUsers;
+    }
+
+    public void deleteUser(){
+        System.out.println("Introdu email-ul usereului pentru stergere:");
 
 
+        while (true){
+            String email = scanner.nextLine();
 
+            if (email.isEmpty() || email.isBlank()){
+                System.out.println("Campul nu poate fi gol...");
+                continue;
+            }
+            if (userRepository.findByEmail(email).isEmpty()){
+                System.out.println("Userul " + email + " nu a fost gasit in repo.");
+                continue;
+            }
 
-
-
-
-
-
-
-
-
+            userRepository.deleteByEmail(email);
+            return;
+        }
 
 
     }
