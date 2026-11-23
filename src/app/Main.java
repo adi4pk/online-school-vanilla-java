@@ -36,9 +36,9 @@ public class Main {
 //            System.out.println(u.toText());
 //        }
 
-        CourseRepository courseRepo = view.getCourseRepo();
-        courseRepo.add(curs1);
-        courseRepo.assignCourseToTeacher(curs1, ((Teacher)view.getViewUser()));
+//        CourseRepository courseRepo = view.getCourseRepo();
+//        courseRepo.add(curs1);
+//        courseRepo.assignCourseToTeacher(curs1, ((Teacher)view.getViewUser()));
 
     }
 

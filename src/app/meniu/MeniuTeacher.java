@@ -1,6 +1,7 @@
 package app.meniu;
 
 import app.View;
+import app.logger.Sesiune;
 
 public class MeniuTeacher implements MeniuRol{
 
@@ -17,6 +18,8 @@ public class MeniuTeacher implements MeniuRol{
         System.out.println("OK, you are telling the truth! - TEACHER");
         System.out.println("1-show Courses");
         System.out.println("2 - MY STUDENTS");
+        System.out.println("3 - Log out");
+
         System.out.println("0 - go back");
     }
 
@@ -29,6 +32,9 @@ public class MeniuTeacher implements MeniuRol{
             case 2:
                 view.showStudentsFromCourse();
                 break;
+            case 3:
+                Sesiune.getInstance().logout();
+                return false;
             case 0:
                 return false;
             default:

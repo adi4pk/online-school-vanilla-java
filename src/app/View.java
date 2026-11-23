@@ -16,13 +16,14 @@ import app.users.model.User;
 import app.enrollment.repository.EnrollmentRepository;
 import app.enrollment.model.Enrollment;
 import app.users.repository.UserRepository;
+import app.logger.Sesiune;
 
 import java.time.LocalDate;
 import java.util.*;
 
 public class View {
 
-    private User user;
+//    private User user;
     private Scanner scanner;
     private BookRepository bookRepository;
     private UserRepository userRepository;
@@ -58,7 +59,7 @@ public class View {
 
     public User getViewUser(){
 
-        return this.user;
+        return Sesiune.getInstance().getUtilizator();
     }
 
 
@@ -118,7 +119,7 @@ public class View {
                     }
                     if (logat){
                         System.out.println("Logare cu succes!");
-                        this.user = loggedUser;
+                        Sesiune.getInstance().login(loggedUser);        // user ca param pentru Sesiune
                         return;
                     }
                     else {
@@ -148,7 +149,7 @@ public class View {
 
 
     private MeniuRol alegeMeniu(){
-        if (user.getRol().equals("TEACHER")){
+        if (Sesiune.getInstance().getUtilizator().getRol().equals("TEACHER")){
             return new MeniuTeacher(this);
         }
         return new MeniuStudent(this);
@@ -173,7 +174,7 @@ public class View {
     public  void showStudentBooks(){
 
 
-        List<Book> bookList= bookRepository.findBooksByStudentId(user.getId());
+        List<Book> bookList= bookRepository.findBooksByStudentId(Sesiune.getInstance().getUtilizator().getId());
 
         for(Book b :bookList){
 
@@ -217,9 +218,9 @@ public class View {
             Optional<Course> foundCourse = courseRepository.findByCourseName(courseName);
             if (foundCourse.isPresent()){
                 try{
-                    Enrollment newEnrollment = new Enrollment(user.getId(), foundCourse.get().getCourseId(), LocalDate.now());
+                    Enrollment newEnrollment = new Enrollment(Sesiune.getInstance().getUtilizator().getId(), foundCourse.get().getCourseId(), LocalDate.now());
                     enrollmentRepository.addEnrollment(newEnrollment);
-                    foundCourse.get().addStudentsToCourse((Student)user);
+                    foundCourse.get().addStudentsToCourse((Student)Sesiune.getInstance().getUtilizator());
                     System.out.println("enrolled");
                     return;
 
@@ -259,9 +260,9 @@ public class View {
             }
 
             if (foundCourseByName.isPresent()){
-                try{ Optional<Enrollment> enrollmentToRemove = enrollmentRepository.findByStudentIdAndCourseId(this.user.getId(), foundCourseByName.get().getCourseId());
+                try{ Optional<Enrollment> enrollmentToRemove = enrollmentRepository.findByStudentIdAndCourseId(Sesiune.getInstance().getUtilizator().getId(), foundCourseByName.get().getCourseId());
                     enrollmentRepository.deleteById(enrollmentToRemove.get().getStudentId(), enrollmentToRemove.get().getCourseId());
-                    foundCourseByName.get().removeStudentFromCourse((Student) this.user);
+                    foundCourseByName.get().removeStudentFromCourse((Student) Sesiune.getInstance().getUtilizator());
                     System.out.println("Te-ai retras de la cursul " + foundCourseByName.get());
                 }
                 catch (Exception e){
@@ -285,7 +286,7 @@ public class View {
         }
 
         try{
-            bookRepository.addBook(bookName, user.getId());
+            bookRepository.addBook(bookName, Sesiune.getInstance().getUtilizator().getId());
             System.out.println("book added");
         }catch (Exception e){
             e.printStackTrace();
@@ -306,7 +307,7 @@ public class View {
         String newName = scanner.nextLine();
 
         try{
-            bookRepository.updateBookName(oldName,newName, user.getId());
+            bookRepository.updateBookName(oldName,newName, Sesiune.getInstance().getUtilizator().getId());
         }catch (Exception ex){
             ex.printStackTrace();
         }
@@ -341,7 +342,7 @@ public class View {
                 continue;
             }
 
-            Optional<Book> book = bookRepository.findByBookNameAndStudentId(bookName, user.getId());
+            Optional<Book> book = bookRepository.findByBookNameAndStudentId(bookName, Sesiune.getInstance().getUtilizator().getId());
             if (book.isEmpty()){
                 System.out.println("NU poti sterge cartea " + bookName + ", apartine altui student");
                 continue;
@@ -435,7 +436,7 @@ public class View {
         //use Student ID to find Enrollments --> get course ID from Enrollment property (course ID)
         // --> create a <Course> courseList based on courseIds List
     public void showCoursesByEnrollments(){      //gaseste toate enrollments pentru un Student specific
-        List<Enrollment> enrollmentsList = enrollmentRepository.findAllEnrollmentsByStudentId(user.getId());
+        List<Enrollment> enrollmentsList = enrollmentRepository.findAllEnrollmentsByStudentId(Sesiune.getInstance().getUtilizator().getId());
         List<String> courseIds=new ArrayList<>();
 
 
@@ -472,7 +473,7 @@ public class View {
     public List<User> showStudentsByCourseName(String courseName){
 
 //        List<Course> arr = new ArrayList<>(user.getCoursesList()); //---- this is null before the repo is loaded();
-        List<Course> arr=courseRepository.findCoursesByTeacherId(user.getId());
+        List<Course> arr=courseRepository.findCoursesByTeacherId(Sesiune.getInstance().getUtilizator().getId());
         List<User> listaStudentiCurs = new ArrayList<>();
 
         //returnam enrollmenturile pentru un singur curs;
@@ -510,7 +511,7 @@ public class View {
 
     public List<Course> showCoursesByTeacher(){
 
-        List<Course> coursesList=courseRepository.findCoursesByTeacherId(user.getId());
+        List<Course> coursesList=courseRepository.findCoursesByTeacherId(Sesiune.getInstance().getUtilizator().getId());
         if (coursesList.isEmpty()){
             System.out.println("Nu aveti niciun curs - somerie");
             return null;

@@ -1,6 +1,7 @@
 package app.meniu;
 
 import app.View;
+import app.logger.Sesiune;
 
 public class MeniuStudent implements MeniuRol{
 
@@ -22,6 +23,7 @@ public class MeniuStudent implements MeniuRol{
         System.out.println("6-show available courses");
         System.out.println("7-remove course");
         System.out.println("8-inscrie-te la un curs");
+        System.out.println("9-Log out");
     }
 
     public boolean executa(int alegere){
@@ -51,6 +53,9 @@ public class MeniuStudent implements MeniuRol{
              case 8:
                  view.registerForCourse();
                  break;
+             case 9:
+                 Sesiune.getInstance().logout();
+                 return false;
              case 0:
                  return false;
              default:
