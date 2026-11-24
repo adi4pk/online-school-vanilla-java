@@ -7,5 +7,5 @@ C006,Computer Networks,Computer Science,""
 C007,Data Structures,Computer Science,""
 C008,Artificial Intelligence,Computer Science,9755fd14-6373-4854-b98f-d8298379b95c
 C009,Digital Marketing,Business,9755fd14-6373-4854-b98f-d8298379b95c
-C010,Financial Accounting,Business, 9755fd14-6373-4854-b98f-d8298379b95c
+C010,Financial Accounting,Business,9755fd14-6373-4854-b98f-d8298379b95c
 0ca1507c-2c4e-43c9-8472-5c11ef592426,Macroeconomie,Marketing,9000fd14-6373-4854-b98f-d8298379b95c

@@ -506,9 +506,6 @@ public class View {
         return listaStudentiCurs;    // list is printed as address from memory
     }
 
-
-
-
     public List<Course> showCoursesByTeacher(){
 
         List<Course> coursesList=courseRepository.findCoursesByTeacherId(Sesiune.getInstance().getUtilizator().getId());
@@ -521,6 +518,104 @@ public class View {
             System.out.println(course.toText());
         }
         return coursesList;
+    }
+
+    ///add a course as TEACHER user
+    public void addCourse(){
+
+        String courseName;      /// -> declaram variabila inainte de while, ca sa o putem da builderului
+
+        System.out.println("Introdu numele cursului: ");
+        while (true){
+            System.out.println("Type 0 to go back");
+            courseName = scanner.nextLine();
+
+            if (courseName.equals("0")){
+                return;
+            }
+
+            if (courseName == null || courseName.isEmpty()){
+                System.out.println("Campul nu poate fi gol.");
+                continue;
+            }
+
+            if (courseRepository.findByCourseName(courseName).isPresent()){
+                System.out.println("Cursul cu numele " + courseName + " exista deja in repo.");
+                continue;
+            }
+
+            break;
+            /// de aici courseName este valid       --> courseName = scanner.nextLine() - valoarea introdusa de user este preluata de courseName
+            /// urmeaza citirea department, capacitate etc.
+        }
+
+        System.out.println("Introdu departamentul (optional): ");
+        String departament = null;          /// pentru că departamentul este opțional, îl putem inițializa direct cu -> null:
+        while (true){
+            System.out.println("Type 0 to go back");
+            String input = scanner.nextLine();
+
+            if (input.equals("0")){
+                return;
+            }
+
+            if (input.isBlank() || input.isEmpty()){
+                break;
+            }
+
+            departament = input;
+            break;
+        }
+
+        ////
+
+        Integer capacitate = null;
+        System.out.println("Introdu capacitatea (optional): ");
+        while (true){
+            System.out.println("Type 0 to go back");
+
+            String input = scanner.nextLine();
+
+            if (input.equals("0")){
+                return;
+            }
+
+            if (input.isBlank()) {
+                break;
+            }
+
+            try{
+                int value = Integer.parseInt(input);
+
+                if (value < 1){
+                    System.out.println("Capacitatea trebuie sa fie cel putin 1.");
+                    continue;
+                }
+
+                capacitate = value;
+            } catch (NumberFormatException ex){
+                System.out.println("Capacitatea trebuie sa fie un NUMAR.");     ///catch NU iese automat din loop -- are nevoie de continue
+                continue;
+            }
+
+            break;
+            /// capacitate este validat.
+        }
+
+        /// apelarea Builderului
+        Course curs = new Course.CourseBuilder()
+                .setCourseId()
+                .setCourseName(courseName)
+                .setCapacitate(capacitate)      ///null daca userul trece peste pas.
+                .setDepartment(departament)
+                .setTeacherId(Sesiune.getInstance().getUtilizator().getId())
+                .build();
+
+                try{
+                    courseRepository.add(curs);
+                } catch (IllegalArgumentException ex){
+                    System.out.println(ex.getMessage());
+                }
     }
 
 //if TEACHER --> show teacherMenu(); // show coursesByTeacherId;

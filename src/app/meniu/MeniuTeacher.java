@@ -18,7 +18,8 @@ public class MeniuTeacher implements MeniuRol{
         System.out.println("OK, you are telling the truth! - TEACHER");
         System.out.println("1-show Courses");
         System.out.println("2 - MY STUDENTS");
-        System.out.println("3 - Log out");
+        System.out.println("3 - Adauga un curs nou");
+        System.out.println("4 - Log out");
 
         System.out.println("0 - go back");
     }
@@ -33,6 +34,9 @@ public class MeniuTeacher implements MeniuRol{
                 view.showStudentsFromCourse();
                 break;
             case 3:
+                view.addCourse();
+                break;
+            case 4:
                 Sesiune.getInstance().logout();
                 return false;
             case 0:
